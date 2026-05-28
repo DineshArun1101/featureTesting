@@ -2,24 +2,33 @@ pipeline {
     agent any
 
     parameters {
-        // Only parameter: folder name from repo
-        string(name: 'TARGET_FOLDER', defaultValue: 'perf-tests', description: 'Folder in GitHub repo containing JMX file')
+        // Branch name to checkout (e.g. "main", "feature-xyz")
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to run tests from')
     }
 
     stages {
-        stage('Checkout') {
+        stage('Validate Branch') {
             steps {
-                checkout scm
+                script {
+                    // Check if branch exists in remote before checkout
+                    def branchExists = sh(
+                        script: "git ls-remote --heads https://github.com/DineshArun1101/featureTesting.git ${params.BRANCH_NAME}",
+                        returnStdout: true
+                    ).trim()
+
+                    if (!branchExists) {
+                        error "Branch '${params.BRANCH_NAME}' not found in remote repository!"
+                    }
+                }
             }
         }
 
-        stage('Validate Folder') {
+        stage('Checkout') {
             steps {
-                script {
-                    if (!fileExists("${params.TARGET_FOLDER}")) {
-                        error "Folder '${params.TARGET_FOLDER}' not found in repo!"
-                    }
-                }
+                // Checkout the branch specified in BRANCH_NAME
+                checkout([$class: 'GitSCM',
+                          branches: [[name: "*/${params.BRANCH_NAME}"]],
+                          userRemoteConfigs: [[url: 'https://github.com/DineshArun1101/featureTesting.git']]])
             }
         }
 
@@ -28,7 +37,7 @@ pipeline {
                 sh """
                     #!/bin/bash
                     chmod +x run-jmeter.sh
-                    ./run-jmeter.sh $TARGET_FOLDER
+                    ./run-jmeter.sh
                 """
             }
         }
