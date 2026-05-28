@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     parameters {
-        // Branch name to checkout (e.g. "main", "feature-xyz")
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to run tests from')
     }
 
@@ -10,7 +9,6 @@ pipeline {
         stage('Validate Branch') {
             steps {
                 script {
-                    // Check if branch exists in remote before checkout
                     def branchExists = sh(
                         script: "git ls-remote --heads https://github.com/DineshArun1101/featureTesting.git ${params.BRANCH_NAME}",
                         returnStdout: true
@@ -18,6 +16,8 @@ pipeline {
 
                     if (!branchExists) {
                         error "Branch '${params.BRANCH_NAME}' not found in remote repository!"
+                    } else {
+                        echo "Branch '${params.BRANCH_NAME}' exists in remote."
                     }
                 }
             }
@@ -25,10 +25,10 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                // Checkout the branch specified in BRANCH_NAME
                 checkout([$class: 'GitSCM',
                           branches: [[name: "*/${params.BRANCH_NAME}"]],
-                          userRemoteConfigs: [[url: 'https://github.com/DineshArun1101/featureTesting.git']]])
+                          userRemoteConfigs: [[url: 'https://github.com/DineshArun1101/featureTesting.git',
+                                               credentialsId: 'MyGitHubCreds']]])
             }
         }
 
