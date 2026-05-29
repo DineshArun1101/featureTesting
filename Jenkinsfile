@@ -9,9 +9,9 @@ pipeline {
         stage('Validate Branch') {
             steps {
                 script {
-                    // Use git ls-remote directly with Jenkins Git installation
+                    // Validate branch existence in remote
                     def branchExists = bat(
-                        script: "git ls-remote --heads https://github.com/DineshArun1101/featureTesting.git %BRANCH_NAME%",
+                        script: "git ls-remote --heads https://github.com/DineshArun1101/featureTesting.git ${params.BRANCH_NAME}",
                         returnStdout: true
                     ).trim()
 
@@ -35,9 +35,9 @@ pipeline {
 
         stage('Run JMeter') {
             steps {
+                // Pass JMeter installation path as argument to the script
                 bat """
-                    chmod +x run-jmeter.sh
-                    ./run-jmeter.sh
+                    bash run-jmeter.sh "D:/Softwares/apache-jmeter-5.6.2"
                 """
             }
         }
