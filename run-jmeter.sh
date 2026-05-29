@@ -2,36 +2,37 @@
 
 # First argument is JMeter installation path
 JMETER_HOME=$1
-echo "JMETER_HOME=$JMETER_HOME"
-
 WORKSPACE=$(pwd)   # Jenkins job workspace
 
 # Test parameters
 THREADS_SAMPLE=10
-echo "THREADS_SAMPLE=$THREADS_SAMPLE"
-
 RAMPUP=10
-echo "RAMPUP=$RAMPUP"
-
 TESTDURATION=300
-echo "TESTDURATION=$TESTDURATION"
 
 # Generate timestamp for unique results
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-RESULTS_FILE="$WORKSPACE/results_${TIMESTAMP}.jtl"
-REPORT_DIR="$WORKSPACE/report_${TIMESTAMP}"
+RESULTS_FILE="results_${TIMESTAMP}.jtl"
+REPORT_DIR="report_${TIMESTAMP}"
 
-# Validate JMX file exists in workspace
+echo "JMETER_HOME=$JMETER_HOME"
+echo "WORKSPACE=$WORKSPACE"
+echo "THREADS_SAMPLE=$THREADS_SAMPLE"
+echo "RAMPUP=$RAMPUP"
+echo "TESTDURATION=$TESTDURATION"
+echo "RESULTS_FILE=$RESULTS_FILE"
+echo "REPORT_DIR=$REPORT_DIR"
+
+# Validate JMX file exists
 if [ ! -f "$WORKSPACE/ORANGEHRM_WEB_APP_10102023_scripted.jmx" ]; then
   echo "ERROR: JMX file not found in $WORKSPACE"
+  ls -l "$WORKSPACE"   # list files for debugging
   exit 1
 fi
 
-# Change directory to workspace to ensure outputs are written there
-cd "$WORKSPACE"
-
 echo "Starting JMeter Load test.."
 
+# Force execution inside workspace
+cd "$WORKSPACE"
 
 # Run JMeter in non-GUI mode with properties
 "$JMETER_HOME/bin/jmeter" -n \
@@ -39,7 +40,12 @@ echo "Starting JMeter Load test.."
   -Jthreads_sample=$THREADS_SAMPLE \
   -Jrampup=$RAMPUP \
   -Jtestduration=$TESTDURATION \
-  -l $RESULTS_FILE \
-  -e -o $REPORT_DIR
+  -l "$RESULTS_FILE" \
+  -e -o "$REPORT_DIR"
 
+# Show files created for debugging
+echo "Files created in workspace:"
+ls -l "$WORKSPACE"
+
+# Exit with JMeter’s status code
 exit $?
