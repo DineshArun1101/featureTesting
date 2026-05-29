@@ -43,9 +43,8 @@ cd "$WORKSPACE"
   -l "$RESULTS_FILE" \
   -e -o "$REPORT_DIR"
 
-# Show files created for debugging
-echo "Files created in workspace:"
-ls -l "$WORKSPACE"
+JMETER_EXIT=$?
+echo "JMeter exit code: $JMETER_EXIT"
 
-# Exit with JMeter’s status code
-exit $?
+echo "Files created in workspace after JMeter run:"
+ls -l "$WORKSPACE"
