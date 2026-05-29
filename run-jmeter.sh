@@ -21,14 +21,25 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 RESULTS_FILE="$WORKSPACE/results_${TIMESTAMP}.jtl"
 REPORT_DIR="$WORKSPACE/report_${TIMESTAMP}"
 
+# Validate JMX file exists in workspace
+if [ ! -f "$WORKSPACE/ORANGEHRM_WEB_APP_10102023_scripted.jmx" ]; then
+  echo "ERROR: JMX file not found in $WORKSPACE"
+  exit 1
+fi
+
+# Change directory to workspace to ensure outputs are written there
+cd "$WORKSPACE"
+
 echo "Starting JMeter Load test.."
 
 
 # Run JMeter in non-GUI mode with properties
 "$JMETER_HOME/bin/jmeter" -n \
-  -t "$WORKSPACE/ORANGEHRM_WEB_APP_10102023_scripted.jmx" \
+  -t ORANGEHRM_WEB_APP_10102023_scripted.jmx \
   -Jthreads_sample=$THREADS_SAMPLE \
   -Jrampup=$RAMPUP \
   -Jtestduration=$TESTDURATION \
   -l $RESULTS_FILE \
   -e -o $REPORT_DIR
+
+exit $?
