@@ -44,8 +44,8 @@ pipeline {
 
         stage('Archive Results') {
             steps {
-                archiveArtifacts artifacts: 'results.jtl'
-                archiveArtifacts artifacts: 'report/**'
+                archiveArtifacts artifacts: 'results_*.jtl'
+                archiveArtifacts artifacts: 'report_*/**'
             }
         }
     }
