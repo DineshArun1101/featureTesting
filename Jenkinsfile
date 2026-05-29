@@ -37,7 +37,7 @@ pipeline {
             steps {
                 // Pass JMeter installation path as argument to the script
                 bat """
-                    bash run-jmeter.sh "D:/Softwares/apache-jmeter-5.6.2"
+                    bash run-jmeter.sh "D:/Softwares/apache-jmeter-5.6.3"
                 """
             }
         }
