@@ -11,8 +11,8 @@ pipeline {
 
         string(
             name: 'REPORT_NAME',
-            defaultValue: 'smokeTest01_0530',
-            description: 'Execution Report Folder Name'
+            defaultValue: '',
+            description: 'Provide format like smokeTest01_0530'
         )
     }
 
@@ -23,11 +23,29 @@ pipeline {
 
     stages {
 
-        stage('Validate Branch') {
+        stage('Validate Inputs') {
 
             steps {
 
                 script {
+
+                    // Validate REPORT_NAME
+
+                    if (!params.REPORT_NAME?.trim()) {
+
+                        error """
+REPORT_NAME parameter is empty.
+
+Please provide report name like:
+smokeTest01_0530
+regressionTest01_0530
+loginTest_0530
+"""
+                    }
+
+                    echo "REPORT_NAME : ${params.REPORT_NAME}"
+
+                    // Validate Git Branch
 
                     def branchExists = bat(
                         script: """
@@ -38,10 +56,16 @@ pipeline {
 
                     if (!branchExists) {
 
-                        error "Branch '${params.BRANCH_NAME}' not found in remote repository!"
+                        error """
+No branch available in repository for:
+
+${params.BRANCH_NAME}
+
+Please provide valid branch name.
+"""
                     }
 
-                    echo "Branch '${params.BRANCH_NAME}' exists in remote."
+                    echo "Branch '${params.BRANCH_NAME}' exists in remote repository."
                 }
             }
         }
