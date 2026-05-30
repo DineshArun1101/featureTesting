@@ -70,33 +70,37 @@ pipeline {
             steps {
 
                 archiveArtifacts artifacts: 'results_*/**', fingerprint: true
-
             }
         }
 
         stage('Publish HTML Report') {
 
-            script {
+            steps {
 
-            def reportFolder = bat(
-                script: '''
-                    for /d %%i in (results_*) do @echo %%i
-                ''',
-                returnStdout: true
-            ).trim().split("\\r?\\n")[-1]
+                script {
 
-            echo "Detected Report Folder: ${reportFolder}"
+                    def reportFolders = bat(
+                        script: '''
+                            for /d %%i in (results_*) do @echo %%i
+                        ''',
+                        returnStdout: true
+                    ).trim().split("\\r?\\n")
 
-            publishHTML(target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: "${reportFolder}/html-report",
-                reportFiles: 'index.html',
-                reportName: "JMeter HTML Report - ${reportFolder}",
-                reportTitles: "JMeter Execution Report"
-            ])
-        }
+                    def reportFolder = reportFolders[-1]
+
+                    echo "Detected Latest Report Folder: ${reportFolder}"
+
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: "${reportFolder}/html-report",
+                        reportFiles: 'index.html',
+                        reportName: "JMeter HTML Report - ${reportFolder}",
+                        reportTitles: "JMeter Execution Report"
+                    ])
+                }
+            }
         }
     }
 
