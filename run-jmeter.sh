@@ -16,7 +16,7 @@ cd "$WORKSPACE"
   -Jthreads_sample=$THREADS_SAMPLE \
   -Jrampup=$RAMPUP \
   -Jtestduration=$TESTDURATION \
-  -j "$WORKSPACE/jmeter.log"
+  -j jmeter.log   # log file created in workspace
 
 echo "=== JMeter log output ==="
-cat "$WORKSPACE/jmeter.log"
+cat jmeter.log
