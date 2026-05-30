@@ -19,9 +19,4 @@ cd "$WORKSPACE"
   -t ORANGEHRM_WEB_APP_10102023_scripted.jmx \
   -Jthreads_sample=$THREADS_SAMPLE \
   -Jrampup=$RAMPUP \
-  -Jtestduration=$TESTDURATION \
-  -l "$RESULTS_FILE" \
-  -e -o "$REPORT_DIR"
-
-echo "Files created in workspace:"
-ls -l "$WORKSPACE"
+  -Jtestduration=$TESTDURATION 
