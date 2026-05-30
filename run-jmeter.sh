@@ -1,18 +1,16 @@
 #!/bin/bash
 
 JMETER_HOME=$1
+REPORT_NAME=$2
 
 THREADS_SAMPLE=20
 RAMPUP=1
 TESTDURATION=30
 
-# Timestamp
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+# Result Folder
+RESULT_DIR="results-history/results_${REPORT_NAME}"
 
-# Main Result Folder
-RESULT_DIR="results_$TIMESTAMP"
-
-# Create folders
+# Create folder
 mkdir -p "$RESULT_DIR"
 
 # Files
@@ -25,6 +23,7 @@ echo "Starting JMeter Load Test"
 echo "Threads        : $THREADS_SAMPLE"
 echo "Rampup         : $RAMPUP"
 echo "Duration       : $TESTDURATION"
+echo "Report Name    : $REPORT_NAME"
 echo "Result Folder  : $RESULT_DIR"
 echo "======================================="
 

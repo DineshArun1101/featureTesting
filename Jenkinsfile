@@ -8,6 +8,12 @@ pipeline {
             defaultValue: 'main',
             description: 'Git branch to run tests from'
         )
+
+        string(
+            name: 'REPORT_NAME',
+            defaultValue: 'smokeTest01_0530',
+            description: 'Execution Report Folder Name'
+        )
     }
 
     environment {
@@ -60,7 +66,7 @@ pipeline {
             steps {
 
                 bat """
-                    bash run-jmeter.sh "${env.JMETER_HOME}"
+                    bash run-jmeter.sh "${env.JMETER_HOME}" "${params.REPORT_NAME}"
                 """
             }
         }
@@ -69,7 +75,7 @@ pipeline {
 
             steps {
 
-                archiveArtifacts artifacts: 'results_*/**', fingerprint: true
+                archiveArtifacts artifacts: "results-history/results_${params.REPORT_NAME}/**", fingerprint: true
             }
         }
 
@@ -77,29 +83,15 @@ pipeline {
 
             steps {
 
-                script {
-
-                    def reportFolders = bat(
-                        script: '''
-                            for /d %%i in (results_*) do @echo %%i
-                        ''',
-                        returnStdout: true
-                    ).trim().split("\\r?\\n")
-
-                    def reportFolder = reportFolders[-1]
-
-                    echo "Detected Latest Report Folder: ${reportFolder}"
-
-                    publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: "${reportFolder}/html-report",
-                        reportFiles: 'index.html',
-                        reportName: "JMeter HTML Report - ${reportFolder}",
-                        reportTitles: "JMeter Execution Report"
-                    ])
-                }
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: "results-history/results_${params.REPORT_NAME}/html-report",
+                    reportFiles: 'index.html',
+                    reportName: "JMeter HTML Report - ${params.REPORT_NAME}",
+                    reportTitles: "JMeter Execution Report"
+                ])
             }
         }
     }
