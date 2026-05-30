@@ -76,18 +76,27 @@ pipeline {
 
         stage('Publish HTML Report') {
 
-            steps {
+            script {
 
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'results_*/html-report',
-                    reportFiles: 'index.html',
-                    reportName: 'JMeter HTML Report',
-                    reportTitles: 'JMeter Execution Report'
-                ])
-            }
+            def reportFolder = bat(
+                script: '''
+                    for /d %%i in (results_*) do @echo %%i
+                ''',
+                returnStdout: true
+            ).trim().split("\\r?\\n")[-1]
+
+            echo "Detected Report Folder: ${reportFolder}"
+
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: "${reportFolder}/html-report",
+                reportFiles: 'index.html',
+                reportName: "JMeter HTML Report - ${reportFolder}",
+                reportTitles: "JMeter Execution Report"
+            ])
+        }
         }
     }
 
