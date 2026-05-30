@@ -42,11 +42,11 @@ pipeline {
             }
         }
 
-//        stage('Archive Results') {
-//            steps {
-//                archiveArtifacts artifacts: 'results_*.jtl'
+        stage('Archive Results') {
+            steps {
+                archiveArtifacts artifacts: 'jmeter.log'
 //                archiveArtifacts artifacts: 'report_*/**'
-//            }
-//        }
+            }
+        }
     }
 }
