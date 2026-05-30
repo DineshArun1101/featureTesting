@@ -39,6 +39,15 @@ EXIT_CODE=$?
 
 echo "======================================="
 echo "JMeter Exit Code = $EXIT_CODE"
+echo "======================================="
+
+echo "REPORT_FOLDER=$RESULT_DIR" > report-location.properties
+
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "JMeter Test Failed"
+    exit $EXIT_CODE
+fi
+
 echo "Results stored in : $RESULT_DIR"
 echo "======================================="
 
