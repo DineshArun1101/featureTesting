@@ -16,7 +16,11 @@ cd "$WORKSPACE"
   -Jthreads_sample=$THREADS_SAMPLE \
   -Jrampup=$RAMPUP \
   -Jtestduration=$TESTDURATION \
-  -j jmeter.log   # log file created in workspace
+  -j jmeter.log
 
-echo "=== JMeter log output ==="
-cat jmeter.log
+if [ -f jmeter.log ]; then
+    echo "=== JMeter log output ==="
+    cat jmeter.log
+else
+    echo "No JMeter log file found."
+fi
