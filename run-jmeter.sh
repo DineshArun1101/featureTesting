@@ -1,15 +1,11 @@
 #!/bin/bash
 
 JMETER_HOME=$1
-WORKSPACE=$(pwd)   # Jenkins job workspace
+WORKSPACE=$(pwd)
 
 THREADS_SAMPLE=1
 RAMPUP=1
 TESTDURATION=1
-
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-RESULTS_FILE="$WORKSPACE/results_${TIMESTAMP}.jtl"
-REPORT_DIR="$WORKSPACE/report_${TIMESTAMP}"
 
 echo "Starting JMeter Load test.."
 
@@ -19,4 +15,8 @@ cd "$WORKSPACE"
   -t ORANGEHRM_WEB_APP_10102023_scripted.jmx \
   -Jthreads_sample=$THREADS_SAMPLE \
   -Jrampup=$RAMPUP \
-  -Jtestduration=$TESTDURATION 
+  -Jtestduration=$TESTDURATION \
+  -j "$WORKSPACE/jmeter.log"
+
+echo "=== JMeter log output ==="
+cat "$WORKSPACE/jmeter.log"
