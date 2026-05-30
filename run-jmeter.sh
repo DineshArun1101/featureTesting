@@ -22,7 +22,10 @@ HTML_REPORT="$RESULT_DIR/html-report"
 
 echo "======================================="
 echo "Starting JMeter Load Test"
-echo "Result Folder : $RESULT_DIR"
+echo "Threads        : $THREADS_SAMPLE"
+echo "Rampup         : $RAMPUP"
+echo "Duration       : $TESTDURATION"
+echo "Result Folder  : $RESULT_DIR"
 echo "======================================="
 
 "$JMETER_HOME/bin/jmeter.bat" -n \
@@ -41,14 +44,13 @@ echo "======================================="
 echo "JMeter Exit Code = $EXIT_CODE"
 echo "======================================="
 
-echo "REPORT_FOLDER=$RESULT_DIR" > report-location.properties
-
 if [ $EXIT_CODE -ne 0 ]; then
     echo "JMeter Test Failed"
     exit $EXIT_CODE
 fi
 
 echo "Results stored in : $RESULT_DIR"
+echo "HTML Report       : $HTML_REPORT/index.html"
 echo "======================================="
 
 echo "Test Execution Completed"

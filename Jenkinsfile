@@ -74,21 +74,6 @@ pipeline {
             }
         }
 
-        stage('Load Report Path') {
-
-            steps {
-
-                script {
-
-                    def props = readProperties file: 'report-location.properties'
-
-                    env.REPORT_FOLDER = props['REPORT_FOLDER']
-
-                    echo "Report Folder = ${env.REPORT_FOLDER}"
-                }
-            }
-        }
-
         stage('Publish HTML Report') {
 
             steps {
@@ -97,7 +82,7 @@ pipeline {
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: "${env.REPORT_FOLDER}/html-report",
+                    reportDir: 'results_*/html-report',
                     reportFiles: 'index.html',
                     reportName: 'JMeter HTML Report',
                     reportTitles: 'JMeter Execution Report'
